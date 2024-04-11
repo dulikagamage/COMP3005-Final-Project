@@ -207,54 +207,61 @@ class User:
             print(error)
 
     @staticmethod
-    def personalTraining(user_id, trainer_id, start_time, date):
-
-        start_hour, start_minute, start_sec = start_time.hour, start_time.minute, start_time.second
-
-        if not (start_minute == 0 and start_sec == 0 and start_hour <= 24 and start_hour >= 0):
+    def reschedulePersonalTraining(class_id, trainer_id, new_date, new_time):
+        #check new time is valid
+        new_hour, new_min, new_sec = new_time.hour, new_time.minute, new_time.second
+        if not (new_min == 0 and new_sec == 0 and new_hour <= 24 and new_hour >= 0):
             print("New time is not valid.")
             return
 
         try:
             conn = db.get_connection()
             cur = conn.cursor()
-
-            #get and set up the trainer
+            if not Admin.doesClassExist(class_id):
+                print("Class does not exist")
+                return
             trainer = Trainer.getTriainer(trainer_id)
             if trainer:
                 trainer_id, first_name, last_name, email, password, t_start, t_end = trainer
-                if User.checkBooked(user_id, date, start_time):
+                cur.execute(f'''SELECT user_id FROM classRegistration WHERE class_id = %s;''', (class_id, ))
+                user_id = cur.fetchone()
+                if user_id:
+                    user_id = user_id[0]
+                if User.checkBooked(user_id, new_date, new_time):
                     print("You are already booked at this time.")
                     return
 
-                #check if trainer is already booked
-                if not Trainer.checkBooked(trainer_id, date, start_time): #trainer is not booked
-                    if not Trainer.checkAvailability(trainer_id, start_time):
-                        print("Trainer does not work at that time")
-                        return
-                    #make a class
-                    f_name = str(User.getUserName(user_id))
-                    class_name = f"{f_name} Private Lesson with {first_name} {last_name}"
+                if new_hour >= t_start.hour and (new_hour + 1) <= t_end.hour:
 
-                    #find a room
-                    room_id = 0
-                    priv_rooms = Admin.getPrivacyRooms(True)
-                    if priv_rooms:
-                        for room in priv_rooms:
-                            if Admin.checkRoomAvailability(room[0], date, start_time)==True:
-                                room_id = room[0]
-                                break
-                    #if no room found
-                    if room_id == 0:
-                        print("No available private rooms for this date and time.\nPrivate class was not booked successfully.")
-                        return
-                    class_id = Admin.createClass(class_name, trainer_id, room_id, date, start_time, True, has_room_booking = True)
-                    Admin.createRoomBooking(room_id, class_id)
-                    cur.execute(f'''INSERT INTO classRegistration (user_id, class_id) VALUES (%s, %s);''', (user_id, class_id))
-                    conn.commit()
-                    print("Private class booked successfully!")
-                else:
-                    print("Trainer is already booked on that date and time")
+                    if not Trainer.checkBooked(trainer_id, new_date, new_time):
+                        if not Trainer.checkAvailability(trainer_id, new_time):
+                            print("Trainer does not work at that time")
+                            return
+                        cur.execute(f'''SELECT room_id FROM class WHERE class_id = %s;''', (class_id, ))
+                        room_id = cur.fetchone()
+
+                        if not Admin.checkRoomAvailability(room_id, new_date, new_time): #if the same room isnt available
+                            room_id = 0
+                            priv_rooms = Admin.getPrivacyRooms(True)
+                            if priv_rooms:
+                                for room in priv_rooms:
+                                    if Admin.checkRoomAvailability(room[0], new_date, new_time):
+                                        room_id = room[0]
+                                        break
+                            #if no room found
+                            if room_id == 0:
+                                print("No available private rooms for this date and time.\nPrivate class was not rescheduled successfully.")
+                                return
+
+                        cur.execute(f"UPDATE class SET date=%s, time = %s, room_id = %s WHERE class_id = %s;", (new_date, new_time, room_id, class_id))
+                        cur.execute(f"UPDATE roomBooking SET room_id = %s WHERE class_id = %s;", (room_id, class_id))
+                        conn.commit()
+                        print("Class updated sucessfully!")
+                    else:
+                        print("Trainer is booked at that time")
+            
+            cur.close()
+
         except Exception as error:
             print(error)
 
@@ -406,4 +413,5 @@ class User:
             return True
         except Exception as e:
             print(e)
+
 
