@@ -14,7 +14,13 @@ Here is what the line should look like, where 'username' and 'password' would be
 
 ⚠️ Ensure these values are correct as they are loaded into the rest of the application and necessary for it to run correctly.  
 
-### ▶️ Running the Program:
+### ▶️ Compiling and Running the Program:
+Verify that you have Python by running the following command in your terminal:
+  
+      python --version
+  Also, install the following if you do not have it already. In your terminal enter:
+  
+      pip3 install psycopg2  
 Navigate to the directory where this project is stored.  
 In your command line or terminal enter the following:  
 
