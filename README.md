@@ -15,6 +15,7 @@ Here is what the line should look like, where 'username' and 'password' would be
 ⚠️Ensure these values are correct as they are loaded into the rest of the application and necessary for it to run correctly.  
 
 ### Running the Program:
+Navigate to the directory where this project is stored.  
 In your command line or terminal enter the following:  
 
         python main.py  
