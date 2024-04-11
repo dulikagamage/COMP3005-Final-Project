@@ -14,7 +14,7 @@ Here is what the line should look like, where 'username' and 'password' would be
 
 ⚠️ Ensure these values are correct as they are loaded into the rest of the application and necessary for it to run correctly.  
 
-Once that is done use the DDL.sql and DML.sql to run queries in pgAdmin4 to set up the database.  
+Once that is done use the DDL.sql and DML.sql (located in SQL folder) to run queries in pgAdmin4 to set up the database.  
 
 ## ▶️ Compiling and Running the Program:
 Verify that you have Python by running the following command in your terminal:
