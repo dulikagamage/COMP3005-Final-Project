@@ -39,7 +39,7 @@ CREATE TABLE class(
   class_id SERIAL PRIMARY KEY,
   class_name VARCHAR(255) NOT NULL,
   trainer_id INT NOT NULL,
-  room_id INT NOT NULL,
+  room_id INT,
   date DATE NOT NULL,
   time TIME NOT NULL,
   is_private BOOLEAN NOT NULL DEFAULT FALSE,
