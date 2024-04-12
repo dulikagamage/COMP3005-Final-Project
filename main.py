@@ -25,12 +25,13 @@ def userMenu():
     print("(3) Register for a public class")
     print("(4) Book a private class")
     print("(5) Cancel a private class")
-    print("(6) Reschedule a private class")
-    print("(7) Show my payments")
-    print("(8) Exit")
+    print("(6) Cancel a public class")
+    print("(7) Reschedule a private class")
+    print("(8) Show my payments")
+    print("(9) Exit")
     print("---------------------------------------------------------")
     #return # of options to use later
-    return 8
+    return 9
 
 def trainerMenu():
     print("---------------------------------------------------------")
@@ -58,7 +59,7 @@ def adminMenu():
 #store corresponding menu functions in an array
 menu = [userMenu, trainerMenu, adminMenu] 
 f1 = [Wrapper.userUpdateUserInfo, Wrapper.userPrintUserDashboard, Wrapper.userRegisterPublicClass,
-      Wrapper.userPersonalTraining, Wrapper.userCancelPrivateTraining, Wrapper.userReschedulePrivateClass, Wrapper.userManagePayment]
+      Wrapper.userPersonalTraining, Wrapper.userCancelPrivateTraining, Wrapper.userCancelPublicClass, Wrapper.userReschedulePrivateClass, Wrapper.userManagePayment]
 f2 = [Wrapper.trainerSetAvailability, Wrapper.trainerViewUserInformation]
 f3 = [Wrapper.adminCreateClassPublic, Wrapper.adminShowAllPublicClasses, 
         Wrapper.adminCreateRoomBooking, Wrapper.adminUpdateRoomBooking, Wrapper.adminDeleteRoomBooking,
