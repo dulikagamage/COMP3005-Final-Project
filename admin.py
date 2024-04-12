@@ -61,7 +61,7 @@ class Admin:
             cur.execute(f'''DELETE FROM roomBooking WHERE room_booking_id = %s RETURNING class_id''', (room_booking_id, ))
             conn.commit()
             c_id = cur.fetchone()[0]
-            cur.execute(f'''UPDATE class SET has_room_booking = False, room_id = 0 WHERE class_id = %s''', (c_id, ))
+            cur.execute(f'''UPDATE class SET has_room_booking = False, room_id = NULL WHERE class_id = %s''', (c_id, ))
             conn.commit()
         except Exception as e:
             print(e)
